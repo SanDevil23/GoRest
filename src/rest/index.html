@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Articles API</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .container {
+            margin: 10px;
+        }
+        .button {
+            padding: 10px;
+            margin: 5px;
+            cursor: pointer;
+            border: none;
+            background-color: #4CAF50;
+            color: white;
+        }
+        .button:hover {
+            background-color: #45a049;
+        }
+        .input {
+            padding: 5px;
+            margin: 5px;
+            width: 200px;
+        }
+        #articles-list {
+            margin-top: 40px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Article Management</h1>
+
+    <div class="container">
+        <h2>Get All Articles</h2>
+        <button class="button" onclick="getAllArticles()">Fetch Articles</button>
+    </div>
+
+    <div class="container">
+        <h2>Get Single Article</h2>
+        <input type="text" id="articleId" class="input" placeholder="Enter Article ID">
+        <button class="button" onclick="getSingleArticle()">Fetch Article</button>
+    </div>
+
+    <div class="container">
+        <h2>Create New Article</h2>
+        <input type="text" id="id" class="input" placeholder="ID">
+        <input type="text" id="title" class="input" placeholder="Title">
+        <input type="text" id="desc" class="input" placeholder="Description">
+        <textarea id="content" class="input" placeholder="Content"></textarea>
+        <button class="button" onclick="createArticle()">Create Article</button>
+    </div>
+
+    <div class="container">
+        <h2>Delete Article</h2>
+        <input type="text" id="deleteId" class="input" placeholder="Enter Article ID to Delete">
+        <button class="button" onclick="deleteArticle()">Delete Article</button>
+    </div>
+
+    <div id="articles-list">
+        <h2>Articles:</h2>
+        <ul id="articles"></ul>
+    </div>
+
+    <script>
+        const apiUrl = "http://localhost:3000";
+
+        // Fetch all articles and display
+        function getAllArticles() {
+            fetch(`${apiUrl}/articles`)
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data);
+                    let articlesList = document.getElementById("articles");
+                    articlesList.innerHTML = '';
+                    data.forEach(article => {
+                        let li = document.createElement("li");
+                        li.innerHTML = `ID: ${article.id} | Title: ${article.title} | Description: ${article.desc} | Content: ${article.content}`;
+                        articlesList.appendChild(li);
+                    });
+                })
+                .catch(error => console.error('Error fetching articles:', error));
+        }
+
+        // Fetch a single article by ID
+        function getSingleArticle() {
+            const articleId = document.getElementById("articleId").value;
+            fetch(`${apiUrl}/article/${articleId}`)
+                .then(response => response.json())
+                .then(article => {
+                    let articlesList = document.getElementById("articles");
+                    articlesList.innerHTML = '';
+                    let li = document.createElement("li");
+                    li.innerHTML = `ID: ${article.id} | Title: ${article.title} | Description: ${article.desc} | Content: ${article.content}`;
+                    articlesList.appendChild(li);
+                    // alert(`Article Found: ${JSON.stringify(data)}`);
+                })
+                .catch(error => alert('Article not found', error));
+        }
+
+        // Create a new article
+        function createArticle() {
+            const id = document.getElementById("id").value;
+            const title = document.getElementById("title").value;
+            const desc = document.getElementById("desc").value;
+            const content = document.getElementById("content").value;
+
+            const articleData = {
+                id: id,
+                title: title,
+                desc: desc,
+                content: content
+            };
+
+            fetch(`${apiUrl}/article`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(articleData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert('Article Created Successfully ');
+                getAllArticles();  // Refresh the list of articles
+            })
+            .catch(error => console.error('Error creating article:', error));
+        }
+
+        // Delete an article by ID
+        function deleteArticle() {
+            const articleId = document.getElementById("deleteId").value;
+
+            fetch(`${apiUrl}/delete/${articleId}`, {
+                method: 'DELETE'
+            })
+            .then(response => response.text())
+            .then(data => {
+                alert(data);
+                getAllArticles();  // Refresh the list of articles
+            })
+            .catch(error => console.error('Error deleting article:', error));
+        }
+    </script>
+</body>
+</html>

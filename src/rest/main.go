@@ -8,6 +8,7 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
+	"github.com/rs/cors"
 )
 
 // declaring the structure for the article
@@ -35,7 +36,19 @@ func handleRequests() {
 	myRouter.HandleFunc("/article", createNewArticle).Methods("POST")
 	myRouter.HandleFunc("/article/{id}", returnSingleArticle)
 	myRouter.HandleFunc("/delete/{id}", deleteArticle).Methods("DELETE")
-	log.Fatal(http.ListenAndServe(":3000", myRouter))
+
+	// Set up CORS handler
+	c := cors.New(cors.Options{
+		AllowedOrigins: []string{"*"}, // Allow the frontend running on localhost:8080
+		AllowedMethods: []string{"GET", "POST", "DELETE", "OPTIONS"},
+		AllowedHeaders: []string{"Content-Type", "Authorization"},
+	})
+	
+
+	// Apply CORS middleware to the router
+	handler := c.Handler(myRouter)
+
+	log.Fatal(http.ListenAndServe(":3000", handler))
 	fmt.Println("Server successfully started on the port: 3000" )
 }
 

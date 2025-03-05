@@ -3,7 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"log"
 	"net/http"
 
@@ -39,7 +39,7 @@ func handleRequests() {
 
 	// Set up CORS handler
 	c := cors.New(cors.Options{
-		AllowedOrigins: []string{"*"}, // Allow the frontend running on localhost:8080
+		AllowedOrigins: []string{"*"}, 									
 		AllowedMethods: []string{"GET", "POST", "DELETE", "OPTIONS"},
 		AllowedHeaders: []string{"Content-Type", "Authorization"},
 	})
@@ -73,7 +73,7 @@ func returnSingleArticle(w http.ResponseWriter, r *http.Request){
 }
 
 func createNewArticle(w http.ResponseWriter, r *http.Request){
-	reqBody, _ := ioutil.ReadAll(r.Body)
+	reqBody, _ := io.ReadAll(r.Body)
 
 	var art Article
 	json.Unmarshal(reqBody, &art)
@@ -106,8 +106,17 @@ func deleteArticle(w http.ResponseWriter, r *http.Request){
 func main() {
 
 	articles = []Article{
-		Article{Id:"1", Title: "Hello", Desc: "Protcol Buffers", Content: "Article Content"},
-		Article{Id:"2", Title: "Hello2", Desc: "Protcol Buffers2", Content: "Article Content2"},
+		{Id: "1", Title: "Exploring the Universe", Desc: "A journey through the galaxy", Content: "In this article, we explore the vastness of space, from black holes to galaxies."},
+		{Id: "2", Title: "The Future of Technology", Desc: "Innovations shaping tomorrow", Content: "This piece discusses emerging technologies that are set to change our world."},
+		{Id: "3", Title: "Healthy Living Tips", Desc: "Ways to improve your health", Content: "Here are some practical tips for leading a healthier lifestyle."},
+		{Id: "4", Title: "History of Art", Desc: "From the Renaissance to modern times", Content: "An overview of the major art movements and their impact on culture."},
+		{Id: "5", Title: "Understanding Climate Change", Desc: "The science behind global warming", Content: "This article delves into the causes and effects of climate change."},
+		{Id: "6", Title: "Travel Destinations", Desc: "Top places to visit this year", Content: "Explore some of the most beautiful travel destinations around the globe."},
+		{Id: "7", Title: "Mastering Personal Finance", Desc: "Tips for managing your money", Content: "Learn how to budget, save, and invest wisely for a secure financial future."},
+		{Id: "8", Title: "The Art of Cooking", Desc: "Culinary skills to impress", Content: "This article provides essential cooking techniques for home chefs."},
+		{Id: "9", Title: "Fitness Trends", Desc: "What's hot in the fitness world", Content: "A look at the latest trends in health and fitness."},
+		{Id: "10", Title: "The Power of Mindfulness", Desc: "Finding peace in a chaotic world", Content: "Explore how mindfulness can enhance your mental well-being."},
 	}
+
 	handleRequests();
 }

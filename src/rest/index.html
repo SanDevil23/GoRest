@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOCTYPE html> 
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -21,7 +21,7 @@
             color: white;
         }
         .button:hover {
-            background-color: #45a049;
+            background-color: #46a34b;
         }
         .input {
             padding: 5px;
@@ -30,6 +30,18 @@
         }
         #articles-list {
             margin-top: 40px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
         }
     </style>
 </head>
@@ -65,7 +77,17 @@
 
     <div id="articles-list">
         <h2>Articles:</h2>
-        <ul id="articles"></ul>
+        <table id="articles-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Title</th>
+                    <th>Description</th>
+                    <th>Content</th>
+                </tr>
+            </thead>
+            <tbody id="articles"></tbody>
+        </table>
     </div>
 
     <script>
@@ -80,9 +102,9 @@
                     let articlesList = document.getElementById("articles");
                     articlesList.innerHTML = '';
                     data.forEach(article => {
-                        let li = document.createElement("li");
-                        li.innerHTML = `ID: ${article.id} | Title: ${article.title} | Description: ${article.desc} | Content: ${article.content}`;
-                        articlesList.appendChild(li);
+                        let row = document.createElement("tr");
+                        row.innerHTML = `<td>${article.id}</td><td>${article.title}</td><td>${article.desc}</td><td>${article.content}</td>`;
+                        articlesList.appendChild(row);
                     });
                 })
                 .catch(error => console.error('Error fetching articles:', error));
@@ -96,10 +118,9 @@
                 .then(article => {
                     let articlesList = document.getElementById("articles");
                     articlesList.innerHTML = '';
-                    let li = document.createElement("li");
-                    li.innerHTML = `ID: ${article.id} | Title: ${article.title} | Description: ${article.desc} | Content: ${article.content}`;
-                    articlesList.appendChild(li);
-                    // alert(`Article Found: ${JSON.stringify(data)}`);
+                    let row = document.createElement("tr");
+                    row.innerHTML = `<td>${article.id}</td><td>${article.title}</td><td>${article.desc}</td><td>${article.content}</td>`;
+                    articlesList.appendChild(row);
                 })
                 .catch(error => alert('Article not found', error));
         }
@@ -127,7 +148,7 @@
             })
             .then(response => response.json())
             .then(data => {
-                alert('Article Created Successfully ');
+                alert('Article Created Successfully');
                 getAllArticles();  // Refresh the list of articles
             })
             .catch(error => console.error('Error creating article:', error));
